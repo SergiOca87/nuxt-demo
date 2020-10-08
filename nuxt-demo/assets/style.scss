@@ -1,0 +1,273 @@
+// Colors
+$orange: #ed6e33;
+$black: #2c2c2c;
+$fade: rgba(0, 0, 0, .5);
+
+//Breakpoints
+$bp-largest: 1300px;
+$bp-large: 1200px;
+$bp-medium: 800px;
+$bp-small: 640px;
+$bp-xs: 350px;
+
+//Generals
+*,
+*::after,
+*::before {
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: inherit;
+	box-sizing: inherit;
+}
+
+//Flex
+@mixin display-flex($direction, $justify, $align) {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: $direction;
+	flex-direction: $direction;
+	-webkit-box-pack: $justify;
+	-ms-flex-pack: $justify;
+	justify-content: $justify;
+	-webkit-box-align: $align;
+	-ms-flex-align: $align;
+	align-items: $align;
+}
+
+html {
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	font-size: 62.5%;
+	color: #4b4b4d;
+	scroll-behavior: smooth;
+
+	@media only screen and (max-width: $bp-small) {
+		font-size: 55%;
+	}
+}
+
+body {
+	font-size: 1.8rem;
+	overflow-x: hidden;
+	color: inherit;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-color: #fff;
+	font-family: 'Cadiz-Regular', sans-serif;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+h1, h2, h3, h4 {
+	font-family: 'Cadiz-Bold', sans-serif;
+	color: #4d4d4f;
+}
+
+
+h1 {
+	font-size: 4rem;
+
+	@media screen and (max-width: $bp-small) {
+		font-size: 2.8rem;
+		line-height: 4rem;
+	}
+}
+
+h2 {
+	font-size: 2.8rem;
+}
+
+h3 {
+	font-size: 2.2rem;
+}
+
+textarea:focus, input:focus, select:focus{
+    outline: none;
+}
+
+p {
+	font-size: 1.8rem;
+	line-height: 2.8rem;
+	color: #525254
+	;
+
+	&.small {
+		font-size: 1.6rem;
+		line-height: 2rem;
+	}
+}
+
+a {
+	-webkit-transition: all 200ms;
+	-o-transition: all 200ms;
+	transition: all 200ms;
+	color: inherit;
+	position: relative;
+	color: inherit;
+	text-decoration: none;
+
+	&:focus {
+		color: inherit;
+	}
+
+	&:hover {
+		color: $orange;
+	}
+
+	&.btn {
+		display: inline-block;
+		font-size: 1.6rem;
+		-webkit-transition: all 300ms;
+		-o-transition: all 300ms;
+		transition: all 300ms;
+		color: #fff;
+		padding: .6rem 2.3rem;
+		border: 2px solid transparent;
+		letter-spacing: 1px;
+		border-radius: 2px;
+		border-radius: 5px;
+		white-space: nowrap;
+		// -webkit-transform: perspective(1px) translateZ(0);
+		// transform: perspective(1px) translateZ(0);
+		position: relative;
+		
+       &.btn-orange {
+           background-color: $orange;
+           color: #fff;
+           border: 2px solid $orange;
+
+           &:hover {
+                color: $orange;
+                background-color: #fff;
+           }
+			
+		}
+
+		&.btn-transparent {
+			border: solid 1px #979797;
+
+			&:hover {
+				color: #fff;
+				border-color: $orange;
+				background-color: $orange;
+			}
+		}
+	}
+}
+
+
+//Utils
+.mb-xs {
+	margin-bottom: 1rem;
+}
+.mb-sm {
+	margin-bottom: 2rem;
+}
+.mb-md {
+	margin-bottom: 3rem;
+}
+.mb-lg {
+	margin-bottom: 4rem;
+}
+.mb-xl {
+	margin-bottom: 7rem;
+}
+.mb-xxl {
+	margin-bottom: 9rem;
+
+	@media screen and(max-width: $bp-xs) {
+		margin-bottom: 5rem;
+	}
+}
+.mt-xs {
+	margin-top: 1rem;
+}
+.mt-sm {
+	margin-top: 2rem;
+}
+.mt-md {
+	margin-top: 3rem;
+}
+.mt-lg {
+	margin-top: 4rem;
+}
+.mt-xl {
+	margin-top: 7rem;
+}
+.mt-xxl {
+	margin-top: 9rem;
+}
+
+.padding-small {
+	padding: 3rem 0;
+}
+
+.padding {
+	padding: 6rem 0;
+}
+
+.padding-large {
+	padding: 9rem 0;
+}
+
+.no-padding {
+	padding: 0;
+}
+
+.min-view {
+	min-height: 60vh;
+	@include display-flex(column, center, center);
+}
+
+hr {
+	background-color: rgba(151, 151, 151, .3);
+}
+
+.text-padding {
+	padding: 0 2rem; 
+
+	@media screen and(max-width: $bp-large) {
+		padding: 0;
+	}
+}
+
+.text-padding-large {
+	padding: 0 4rem; 
+
+	@media screen and(max-width: $bp-large) {
+		padding: 0;
+	}
+}
+
+
+.page-title {
+
+    h2 {
+		font-size: 3.2rem;
+		// font-family: 'Cadiz-Bold', sans-serif;
+		letter-spacing: -0.89px;
+    }
+
+    @media screen and(max-width: $bp-medium) {
+		text-align: center;
+	}
+}
+
+.white {
+	color: #fff;
+}
+
+.orange {
+	color: $orange;
+}
+
+.fade {
+	color: $fade;
+}

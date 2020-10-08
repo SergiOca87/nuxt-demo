@@ -13,14 +13,8 @@
                 <div class="post" v-for="post in posts" :key="post.id">
                     <h3>
                         <!-- for each one of them, we’ll render their title, and link off to their individual page -->
-                        <a :href="`blog/${post.slug}`">{{
-                            post.title.rendered
-                        }}</a>
+                        {{ post.title }}
                     </h3>
-                    <div v-html="post.excerpt.rendered"></div>
-                    <a :href="`blog/${post.slug}`" class="readmore"
-                        >Read more ⟶</a
-                    >
                 </div>
             </main>
         </div>
@@ -31,20 +25,20 @@
 export default {
     computed: {
         posts() {
-            return this.$store.state.posts
+            return this.$store.state.posts.all
         },
         properties() {
-          return this.$store.state.properties
+            return this.$store.state.properties
         }
     },
     created() {
-        this.$store.dispatch('getPosts'),
+        // this.$store.dispatch('getPosts'),
         this.$store.dispatch('getProperties')
     },
 }
 </script>
 
-<style>
+<style scoped>
 .container {
     margin: 0 auto;
     min-height: 100vh;
