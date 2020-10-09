@@ -24,10 +24,11 @@ export const actions = {
       ).then(res => res.json())
       properties = properties
         .filter(el => el.status === "publish")
-        .map(({ id, slug, title, excerpt, date, tags, content }) => ({
+        .map(({ id, slug, title, acf }) => ({
           id,
           slug,
-          title
+          title,
+          acf
         }))
       commit("updateProperties", properties)
     } catch (err) {

@@ -6,6 +6,7 @@
                 <!-- here we loop through the posts -->
                 <div class="post" v-for="property in properties" :key="property.id">
                     <h3>{{ property.title.rendered }}</h3>
+                    <p>{{property.acf.location_tab_group.map }}</p>
                 </div>
 
                 <h2>Posts</h2>
