@@ -22,7 +22,7 @@ export default {
   ],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
+//   plugins: ['@/plugins/google-maps'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -37,8 +37,14 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
+    '@nuxtjs/dotenv'
   ],
 
+  env: {
+    VUE_APP_GOOGLE_MAPS_API_KEY: process.env.VUE_APP_GOOGLE_MAPS_API_KEY
+  },
+ 
+  
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
 }

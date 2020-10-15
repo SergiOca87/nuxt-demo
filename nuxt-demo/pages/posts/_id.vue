@@ -18,12 +18,20 @@
 </template>
 <script>
 export default {
+    head() {
+        return {
+            title: this.post.title,
+            meta: [
+                {name: 'twitter:title', content: this.post.title},
+                {name: 'twitter:description', content: this.post.content}
+            ]
+        }
+    },
     data() {
         return {
             id: this.$route.params.id
         }
     },
-
     computed: {
         post() {
             return this.$store.state.posts.all.find(post => post.id === this.id)

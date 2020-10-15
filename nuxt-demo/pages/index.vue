@@ -2,6 +2,23 @@
     <div class="container">
         <div class="posts">
             <main>
+
+                <!-- This is not working, I think -->
+                <GmapMap
+                    :center="{lat:10, lng:10}"
+                    :zoom="7"
+                    map-type-id="terrain"
+                    style="width: 500px; height: 300px"
+                    >
+                    <GmapMarker
+                        :key="index"
+                        v-for="(m, index) in markers"
+                        :position="m.position"
+                        :clickable="true"
+                        :draggable="true"
+                        @click="center=m.position"
+                    />
+                </GmapMap>
                <h2>Properties</h2>
                 <!-- here we loop through the posts -->
                 <div class="post" v-for="property in properties" :key="property.id">
@@ -22,8 +39,14 @@
     </div>
 </template>
 
+
 <script>
 export default {
+    head() {
+        return {
+            title: 'Nuxt Demo'
+        }
+    },
     computed: {
         posts() {
             return this.$store.state.posts.all
