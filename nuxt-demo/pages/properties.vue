@@ -6,8 +6,8 @@
             <!-- basic search -->
             <div class="properties__form__search">
                 <div class="properties__form__search__item">
-                    <select name="'property-state'">
-                        <option v-for="location in locations" value="">{{ location }}</option>
+                    <select name="'property-state'" v-model="property_city" v-on:change="filterProperties()">
+                        <option v-for="location in locations" :value="location">{{ location }}</option>
                     </select>
                 </div>
                 <div class="properties__form__search__item">
@@ -19,10 +19,20 @@
             </div>
         </form>
 
-         <div class="post" v-for="property in properties" :key="property.id">
-            <h3>{{ property.title.rendered }}</h3>
-            <p>{{property.acf.location_tab_group.map }}</p>
-        </div>
+  
+        <template v-if="filteredProperties.length">
+            <div class="post" v-for="property in filteredProperties" :key="property.id">
+                <h3>{{ property.title.rendered }}</h3>
+                <p>{{property.acf.location_tab_group.map }}</p>
+            </div>
+        </template>
+        <template v-else>
+            <div class="post" v-for="property in properties" :key="property.id">
+                <h3>{{ property.title.rendered }}</h3>
+                <p>{{property.acf.location_tab_group.map }}</p>
+            </div>  
+        </template>
+      
 	</main>
 </template>
 
@@ -33,9 +43,12 @@ export default {
             title: 'Properties'
         }
     },
-	
+    data() {
+        return {
+            property_city: '',
+        }
+    },
     created() {
-        // this.$store.dispatch('getPosts'),
         this.$store.dispatch('getProperties')
     },
     computed: {
@@ -43,11 +56,19 @@ export default {
             return this.$store.state.properties
         },
         locations() {
-            if( this.$store.state.properties.length ) {
-                const locationsArr = this.$store.state.properties.map( property => property.acf.location_tab_group.location_table.city )
-                return [...new Set(locationsArr)];
-            }
+            return this.$store.state.locations
+        },
+        filteredProperties() {
+            return this.$store.state.filteredProperties
         }
     },
+    methods: {
+        refresh() {
+             this.$fetch()
+        },
+        filterProperties() {
+            this.$store.dispatch('filterProperties', this.property_city)
+        }
+    }
 }
 </script>

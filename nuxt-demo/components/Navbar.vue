@@ -2,10 +2,13 @@
    <nav>
        <div class="container">
            <div class="nav-inner">
-                <h1>Logo</h1>
+                <h1>
+                    <NuxtLink to="/">Logo</NuxtLink>
+                </h1>
                 <ul>
-                    <li>About</li>
-                    <li>Contact</li>
+                    <li>
+                        <NuxtLink to="/properties">Properties</NuxtLink>
+                    </li>
                 </ul>
            </div>
        </div>
