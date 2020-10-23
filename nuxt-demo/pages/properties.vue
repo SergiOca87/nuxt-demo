@@ -6,19 +6,26 @@
             <!-- basic search -->
             <div class="properties__form__search">
                 <div class="properties__form__search__item">
+                    <label for="property-state">City</label>
                     <select name="'property-state'" v-model="property_city" v-on:change="filterByCity()">
                         <option value="all">Locations</option>
                         <option v-for="location in locations" :value="location">{{ location }}</option>
                     </select>
                 </div>
+         
                 <div class="properties__form__search__item">
+                    <label for="offering-type">Offering Type</label>
                     <select name="'offering-type'" v-model="property_offering" v-on:change="filterByOffering()">
                         <option value="all">Offering Type</option>
                         <option v-for="offering in offerings" :value="offering">{{ offering }}</option>
                     </select>
                 </div>
                 <div class="properties__form__search__item">
-                    <select name="'property-type'"></select>
+                    <label for="offering-type">Property Type</label>
+                    <select name="'property-type'" v-model="property_type" v-on:change="filterByType()">
+                        <option value="all">Property Type</option>
+                        <option v-for="type in types" :value="type">{{ type }}</option>
+                    </select>
                 </div>
             </div>
         </form>
@@ -49,7 +56,8 @@ export default {
     data() {
         return {
             property_city: '',
-            property_offering: ''
+            property_offering: '',
+            property_type: ''
         }
     },
     created() {
@@ -65,6 +73,9 @@ export default {
         offerings() {
             return this.$store.state.offerings
         },
+        types() {
+            return this.$store.state.types
+        },
         filteredProperties() {
             return this.$store.state.filteredProperties
         }
@@ -76,8 +87,11 @@ export default {
         filterByCity() {
             this.$store.dispatch('filterByCity', this.property_city)
         },
-         filterByOffering() {
+        filterByOffering() {
             this.$store.dispatch('filterByOffering', this.property_offering)
+        },
+        filterByType() {
+            this.$store.dispatch('filterByType', this.property_type)
         }
     }
 }
