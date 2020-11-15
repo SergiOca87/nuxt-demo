@@ -3,7 +3,7 @@ this is where we will eventually hold the data for all of our posts
 */
 export const state = () => ({
     properties: [],
-    locations: [],
+    cities: [],
     statePairs: [],
     offerings: [],
     typePairs: [],
@@ -14,8 +14,8 @@ export const mutations = {
     updateProperties: (state, properties) => {
         state.properties = properties
     },
-    updateLocations: (state, locations) => {
-        state.locations = locations
+    updateCities: (state, cities) => {
+        state.cities = cities
     },
     updateStatePairs: (state, statePair) => {
         state.statePairs.push(statePair)
@@ -48,12 +48,16 @@ export const actions = {
                     title,
                     acf,
                 }));
-            
-            const locationsArr = [...new Set( properties.map( property => property.acf.location_tab_group.location_table.city ) )];
+
+            // Update filters with the current properties    
+            const citiesArr = [...new Set( properties.map( property => property.acf.location_tab_group.location_table.city ) )];
             const offeringsArr =  [...new Set( properties.map( property => property.acf.general_tab_group.offering_type ) )];
             const typesArr = [...new Set( [].concat(...properties.map( property => property.acf.general_tab_group.property_type )))];
             const statesArr = [...new Set( properties.map( property => property.acf.location_tab_group.location_table.state ) )];
 
+            // Cities are a string so we can update the cities Array in the state right away
+            commit('updateCities', citiesArr);
+ 
             // This can probably be DRYed up
 
             // offerings returns a number, we need to fetch the actual term name
@@ -76,7 +80,7 @@ export const actions = {
                 })();
             });
 
-            // staes returns a number, we need to fetch the actual term name and create term number with term name pairs
+            // states returns a number, we need to fetch the actual term name and create term number with term name pairs
             statesArr.map((singleState) => {
                 (async () => {
                     const stateResults = await fetch(
@@ -86,9 +90,13 @@ export const actions = {
                 })();
             });
 
-            commit('updateProperties', properties)
-            commit('updateLocations', locationsArr)
+            commit('updateProperties', properties);
+
+            // The first filteredProperties are all of the properties, since we want to show that on page load
+            commit('filterProperties', properties);
+            // commit('updateLocations', locationsArr);
             // commit('updateOfferings', convertedOfferings)
+         
          
             
         } catch (err) {
@@ -98,12 +106,25 @@ export const actions = {
 
     // Can probably create one or 2 functions only
 
-    filterByCity({ state, commit }, location) {
+    updateFilters({state, commit}, filteredProperties) {
+        // Once we have the properties, fill up the filters with the available information
+        
+        // We can use this to make filters dinamyc but how?
+        // Look at this.filterByCity, we can dispatch and updatefilters but it need an order or it will filter out the current filter as well
+        const citiesArr = [...new Set( state.filteredProperties.map( property => property.acf.location_tab_group.location_table.city ) )];
+        const offeringsArr =  [...new Set( state.filteredProperties.map( property => property.acf.general_tab_group.offering_type ) )];
+        const typesArr = [...new Set( [].concat(...state.filteredProperties.map( property => property.acf.general_tab_group.property_type )))];
+        const statesArr = [...new Set( state.filteredProperties.map( property => property.acf.location_tab_group.location_table.state ) )];
+
+        
+    },
+    filterByCity({ state, commit, dispatch }, city) {
         const filteredResults = state.properties.filter(
             (property) =>
-                property.acf.location_tab_group.location_table.city === location
+                property.acf.location_tab_group.location_table.city === city
         )
         commit('filterProperties', filteredResults);
+        dispatch('updateFilters')
     },
     filterByOffering({ state, commit }, offering) {
         let offeringNum;
@@ -134,3 +155,4 @@ export const actions = {
 // - Managed to add typePairs (name equals a term number)
 // - Do the same with offerings
 // - How to filter byType, should be very easy...
+// - The main point is making filters reactive

@@ -1,9 +1,9 @@
 <template>
     <div class="container">
-        <div class="posts">
-            <main>
+        
+            <main class="padding w-100">
 
-                <!-- This is not working, I think -->
+                <!-- This is not working, I think 
                 <GmapMap
                     :center="{lat:10, lng:10}"
                     :zoom="7"
@@ -19,14 +19,35 @@
                         @click="center=m.position"
                     />
                 </GmapMap>
-               <h2>Properties</h2>
+                 -->
+               <h2 class="mb-5">Properties</h2>
                 <!-- here we loop through the posts -->
-                <div class="post" v-for="property in properties" :key="property.id">
-                    <h3>{{ property.title.rendered }}</h3>
-                    <p>{{property.acf.location_tab_group.map }}</p>
-                </div>
+          
+                    <div class="row">
+                        <div class="post col-md-4" v-for="property in properties" :key="property.id">
+                            <b-card
+                                :title="property.title.rendered"
+                                img-src="https://picsum.photos/600/300/?image=25"
+                                img-alt="Image"
+                                img-top
+                                tag="article"
+                                style="max-width: 20rem;"
+                                class="mb-2"
+                            >
+                                <b-card-text>
+                                    Address: {{property.acf.location_tab_group.map.address | capitalize}}
+                                </b-card-text>
 
-                <h2>Posts</h2>
+                                <nuxt-link :to="`/property/${property.id}`">
+                                    Property Page
+                                </nuxt-link>
+                            </b-card>
+                        </div>
+                    </div>
+               
+                
+
+                <h2 class="mt-5 mb-3">Posts</h2>
                 <!-- here we loop through the posts -->
                 <div class="post" v-for="post in posts" :key="post.id">
                     <h3>
@@ -36,7 +57,7 @@
                 </div>
             </main>
         </div>
-    </div>
+    
 </template>
 
 
@@ -55,6 +76,13 @@ export default {
             return this.$store.state.properties
         }
     },
+    filters: {
+        capitalize: function (value) {
+            if (!value) return ''
+            value = value.toString()
+            return value.charAt(0).toUpperCase() + value.slice(1)
+    }
+},
     created() {
         // this.$store.dispatch('getPosts'),
         this.$store.dispatch('getProperties')

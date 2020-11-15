@@ -3,7 +3,7 @@
        <div class="container">
            <div class="nav-inner">
                 <h1>
-                    <NuxtLink to="/">Logo</NuxtLink>
+                    <NuxtLink to="/">Nuxt Demo</NuxtLink>
                 </h1>
                 <ul>
                     <li>
