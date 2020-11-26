@@ -3,7 +3,7 @@ export default {
   ssr: false,
 
   // Target (https://go.nuxtjs.dev/config-target)
-  target: 'static',
+  // target: 'static',
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -23,6 +23,9 @@ export default {
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
 //   plugins: ['@/plugins/google-maps'],
+  plugins: [
+    '~/plugins/maps.client',
+  ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -40,9 +43,9 @@ export default {
     '@nuxtjs/dotenv'
   ],
 
-  env: {
-    VUE_APP_GOOGLE_MAPS_API_KEY: process.env.VUE_APP_GOOGLE_MAPS_API_KEY
-  },
+  // env: {
+  //   VUE_APP_GOOGLE_MAPS_API_KEY: process.env.VUE_APP_GOOGLE_MAPS_API_KEY
+  // },
  
   
   // Build Configuration (https://go.nuxtjs.dev/config-build)

@@ -1,7 +1,9 @@
-import Vue from "vue";
+// Not sure what this is, may be worth checking again
 
-import * as VueGoogleMaps from "@/node_modules/vue2-google-maps";
+// import Vue from "vue";
 
-Vue.use(VueGoogleMaps, {
-  load: { key: process.env.VUE_APP_GOOGLE_MAPS_API_KEY }
-});
+// import * as VueGoogleMaps from "@/node_modules/vue2-google-maps";
+
+// Vue.use(VueGoogleMaps, {
+//   load: { key: process.env.VUE_APP_GOOGLE_MAPS_API_KEY }
+// });

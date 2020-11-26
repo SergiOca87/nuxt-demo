@@ -7,7 +7,9 @@ export const state = () => ({
     statePairs: [],
     offerings: [],
     typePairs: [],
+    activeFilters: [],
     filteredProperties: [],
+    propertiesAddress: [],
 })
 
 export const mutations = {
@@ -28,9 +30,11 @@ export const mutations = {
     },
     filterProperties: (state, results) => {
         state.filteredProperties = results
+    },
+    updateAddresses: (state, addresses) => {
+        state.propertiesAddress = addresses
     }
 }
-
 
 export const actions = {
     async getProperties({ state, commit }) {
@@ -54,10 +58,13 @@ export const actions = {
             const offeringsArr =  [...new Set( properties.map( property => property.acf.general_tab_group.offering_type ) )];
             const typesArr = [...new Set( [].concat(...properties.map( property => property.acf.general_tab_group.property_type )))];
             const statesArr = [...new Set( properties.map( property => property.acf.location_tab_group.location_table.state ) )];
-
+            const addressArr = [...new Set( properties.map( property => property.acf.location_tab_group.address ) )];
             // Cities are a string so we can update the cities Array in the state right away
             commit('updateCities', citiesArr);
  
+            // Addresses are a string, we can update the state right away
+            commit('updateAddresses', addressArr);
+
             // This can probably be DRYed up
 
             // offerings returns a number, we need to fetch the actual term name
@@ -119,31 +126,31 @@ export const actions = {
         
     },
     filterByCity({ state, commit, dispatch }, city) {
-        const filteredResults = state.properties.filter(
+        const filteredResults = state.filteredProperties.filter(
             (property) =>
                 property.acf.location_tab_group.location_table.city === city
         )
         commit('filterProperties', filteredResults);
-        dispatch('updateFilters')
+        // dispatch('updateFilters');
     },
     filterByOffering({ state, commit }, offering) {
         let offeringNum;
         offering === 'Sale' ? offeringNum = 53 : offeringNum = 54
-        const filteredResults = state.properties.filter(
+        const filteredResults = state.filteredProperties.filter(
             (property) =>
                 property.acf.general_tab_group.offering_type === offeringNum
         )
         commit('filterProperties', filteredResults);
     },
     filterByType({ state, commit }, type) {
-        const filteredResults = state.properties.filter(
+        const filteredResults = state.filteredProperties.filter(
             (property) =>                           
                 property.acf.general_tab_group.property_type.find( el => el === type )
         )
         commit('filterProperties', filteredResults);
     },
     filterByState({ state, commit }, singleState) {
-        const filteredResults = state.properties.filter(
+        const filteredResults = state.filteredProperties.filter(
             (property) =>                           
             property.acf.location_tab_group.location_table.state === singleState
         )
@@ -152,7 +159,9 @@ export const actions = {
 }
 
 // TODO
+// Can we get lat and lng from the plugin?
 // - Managed to add typePairs (name equals a term number)
 // - Do the same with offerings
 // - How to filter byType, should be very easy...
-// - The main point is making filters reactive
+// - The main point is making filters reactive, actually not sure about this, complicated.
+// - ActiveFiltersArray, any active filter should be there and everytime a filter is added all of the filters should be taken into account
