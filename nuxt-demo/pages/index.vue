@@ -45,6 +45,25 @@
                         </div>
                     </div>
                
+
+                <h2 class="mb-5">Team</h2>
+                <!-- here we loop through the posts -->
+          
+                    <div class="row">
+                        <div class="post col-md-4" v-for="member in members" :key="member.id">
+                            <b-card
+                                :title="member.title.rendered"
+                            >
+                                <b-card-text>
+                                    {{member.title.rendered}}
+                                </b-card-text>
+
+                                <nuxt-link :to="`/team/${member.id}`">
+                                    Bio
+                                </nuxt-link>
+                            </b-card>
+                        </div>
+                    </div>
                 
 
                 <h2 class="mt-5 mb-3">Posts</h2>
@@ -68,12 +87,17 @@ export default {
             title: 'Nuxt Demo'
         }
     },
+
+    // mapState?
     computed: {
         posts() {
             return this.$store.state.posts.all
         },
         properties() {
             return this.$store.state.properties
+        },
+        members() {
+            return this.$store.state.members
         }
     },
     filters: {
@@ -86,6 +110,7 @@ export default {
     created() {
         // this.$store.dispatch('getPosts'),
         this.$store.dispatch('getProperties')
+        this.$store.dispatch('getTeam')
     },
 }
 </script>

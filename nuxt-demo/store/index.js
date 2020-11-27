@@ -10,6 +10,7 @@ export const state = () => ({
     activeFilters: [],
     filteredProperties: [],
     propertiesAddress: [],
+    members: []
 })
 
 export const mutations = {
@@ -33,6 +34,9 @@ export const mutations = {
     },
     updateAddresses: (state, addresses) => {
         state.propertiesAddress = addresses
+    },
+    updateTeamMembers: (state, members) => {
+        state.members = members
     }
 }
 
@@ -105,6 +109,30 @@ export const actions = {
             // commit('updateOfferings', convertedOfferings)
          
          
+            
+        } catch (err) {
+            console.log(err)
+        }
+    },
+
+    async getTeam({ state, commit }) {
+        if (state.members.length) return
+        try {
+            let team = await fetch(
+                `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/team`
+            ).then((res) => res.json()) 
+
+            team = team
+                .filter((el) => el.status === 'publish')
+                .map(({ id, slug, title, content,  acf }) => ({
+                    id,
+                    slug,
+                    title,
+                    content,
+                    acf,
+                }));
+
+        commit('updateTeamMembers', team);
             
         } catch (err) {
             console.log(err)
