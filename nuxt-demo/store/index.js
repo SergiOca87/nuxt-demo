@@ -10,6 +10,7 @@ export const state = () => ({
     activeFilters: [],
     filteredProperties: [],
     propertiesAddress: [],
+    activeSearchParams: [],
     members: []
 })
 
@@ -34,6 +35,9 @@ export const mutations = {
     },
     updateAddresses: (state, addresses) => {
         state.propertiesAddress = addresses
+    },
+    updateActiveSearchParams: (state, param) => {
+        state.activeSearchParams.push(param)
     },
     updateTeamMembers: (state, members) => {
         state.members = members
@@ -153,15 +157,45 @@ export const actions = {
 
         
     },
+
+    // We need to add each active search param in an Array, for starters
+    // filterByCity({ state, commit }, city) {
+    //     commit('updateActiveSearchParams', 'city');
+    // },
+    // filterByOffering({ state, commit }, offering) {
+    //     commit('updateActiveSearchParams', 'offering');
+    // },
+    // filterByType({ state, commit }, type) {
+    //     commit('updateActiveSearchParams', 'type');
+    // },
+    // filterByState({ state, commit }, singleState) {
+    //     commit('updateActiveSearchParams', 'singleState');
+    // }
+
     filterByCity({ state, commit, dispatch }, city) {
-        const filteredResults = state.filteredProperties.filter(
-            (property) =>
-                property.acf.location_tab_group.location_table.city === city
-        )
+        commit('updateActiveSearchParams', 'city');
+        let filteredResults = '';
+
+        if( city === 'all' ) {
+
+            // What to do here?
+            console.log('all')
+                
+        } else {
+            filteredResults = state.filteredProperties.filter(
+                (property) =>
+                    property.acf.location_tab_group.location_table.city === city
+            )
+        }
+        
         commit('filterProperties', filteredResults);
-        // dispatch('updateFilters');
+        // dispatch is used to execute a different action from within an action
+        dispatch('updateFilters');
+     
+        
     },
     filterByOffering({ state, commit }, offering) {
+        commit('updateActiveSearchParams', 'offering');
         let offeringNum;
         offering === 'Sale' ? offeringNum = 53 : offeringNum = 54
         const filteredResults = state.filteredProperties.filter(
@@ -171,6 +205,7 @@ export const actions = {
         commit('filterProperties', filteredResults);
     },
     filterByType({ state, commit }, type) {
+        commit('updateActiveSearchParams', 'type');
         const filteredResults = state.filteredProperties.filter(
             (property) =>                           
                 property.acf.general_tab_group.property_type.find( el => el === type )
@@ -178,6 +213,8 @@ export const actions = {
         commit('filterProperties', filteredResults);
     },
     filterByState({ state, commit }, singleState) {
+        commit('updateActiveSearchParams', 'singleState');
+        if (singleState === 'all') return
         const filteredResults = state.filteredProperties.filter(
             (property) =>                           
             property.acf.location_tab_group.location_table.state === singleState
@@ -187,6 +224,8 @@ export const actions = {
 }
 
 // TODO
+// Need some way to keep track of every active filter and run each filter with the main properties
+// Use the main properties filter idea for that, a list of "pass" or checks
 // Can we get lat and lng from the plugin?
 // - Managed to add typePairs (name equals a term number)
 // - Do the same with offerings
