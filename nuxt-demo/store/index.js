@@ -11,7 +11,7 @@ export const state = () => ({
     filteredProperties: [],
     propertiesAddress: [],
     activeSearchParams: [],
-    members: []
+    members: [],
 })
 
 export const mutations = {
@@ -41,16 +41,17 @@ export const mutations = {
     },
     updateTeamMembers: (state, members) => {
         state.members = members
-    }
+    },
 }
 
 export const actions = {
     async getProperties({ state, commit }) {
         if (state.properties.length) return
         try {
-            let properties = await fetch(
+            let properties = await this.$axios.$get(
                 `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/property`
-            ).then((res) => res.json())
+            )
+            // ).then((res) => res.json())
 
             properties = properties
                 .filter((el) => el.status === 'publish')
@@ -59,61 +60,98 @@ export const actions = {
                     slug,
                     title,
                     acf,
-                }));
+                }))
 
-            // Update filters with the current properties    
-            const citiesArr = [...new Set( properties.map( property => property.acf.location_tab_group.location_table.city ) )];
-            const offeringsArr =  [...new Set( properties.map( property => property.acf.general_tab_group.offering_type ) )];
-            const typesArr = [...new Set( [].concat(...properties.map( property => property.acf.general_tab_group.property_type )))];
-            const statesArr = [...new Set( properties.map( property => property.acf.location_tab_group.location_table.state ) )];
-            const addressArr = [...new Set( properties.map( property => property.acf.location_tab_group.address ) )];
+            // Update filters with the current properties
+            const citiesArr = [
+                ...new Set(
+                    properties.map(
+                        (property) =>
+                            property.acf.location_tab_group.location_table.city
+                    )
+                ),
+            ]
+            const offeringsArr = [
+                ...new Set(
+                    properties.map(
+                        (property) =>
+                            property.acf.general_tab_group.offering_type
+                    )
+                ),
+            ]
+            const typesArr = [
+                ...new Set(
+                    [].concat(
+                        ...properties.map(
+                            (property) =>
+                                property.acf.general_tab_group.property_type
+                        )
+                    )
+                ),
+            ]
+            const statesArr = [
+                ...new Set(
+                    properties.map(
+                        (property) =>
+                            property.acf.location_tab_group.location_table.state
+                    )
+                ),
+            ]
+            const addressArr = [
+                ...new Set(
+                    properties.map(
+                        (property) => property.acf.location_tab_group.address
+                    )
+                ),
+            ]
             // Cities are a string so we can update the cities Array in the state right away
-            commit('updateCities', citiesArr);
- 
+            commit('updateCities', citiesArr)
+
             // Addresses are a string, we can update the state right away
-            commit('updateAddresses', addressArr);
+            commit('updateAddresses', addressArr)
 
             // This can probably be DRYed up
 
             // offerings returns a number, we need to fetch the actual term name
             offeringsArr.map((offering) => {
-                (async () => {
-                    const offeringResults = await fetch(
+                ;(async () => {
+                    const offeringResults = await this.$axios.$get(
                         `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/offering-type/${offering}`
-                    ).then((res) => res.json());
-                    commit('updateOfferings', offeringResults.name);
-                })();
-            });
+                    )
+                    commit('updateOfferings', offeringResults.name)
+                })()
+            })
 
             // types returns a number, we need to fetch the actual term name and create term number with term name pairs
             typesArr.map((type) => {
-                (async () => {
-                    const typeResults = await fetch(
+                ;(async () => {
+                    const typeResults = await this.$axios.$get(
                         `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/property-type/${type}`
-                    ).then((res) => res.json())
-                    commit('updateTypePairs', {[typeResults.name] : typeResults.id });
-                })();
-            });
+                    )
+                    commit('updateTypePairs', {
+                        [typeResults.name]: typeResults.id,
+                    })
+                })()
+            })
 
             // states returns a number, we need to fetch the actual term name and create term number with term name pairs
             statesArr.map((singleState) => {
-                (async () => {
-                    const stateResults = await fetch(
+                ;(async () => {
+                    const stateResults = await this.$axios.$get(
                         `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/property-state/${singleState}`
-                    ).then((res) => res.json())
-                    commit('updateStatePairs', {[stateResults.name] : stateResults.id });
-                })();
-            });
+                    )
+                    commit('updateStatePairs', {
+                        [stateResults.name]: stateResults.id,
+                    })
+                })()
+            })
 
-            commit('updateProperties', properties);
+            commit('updateProperties', properties)
 
             // The first filteredProperties are all of the properties, since we want to show that on page load
-            commit('filterProperties', properties);
+            commit('filterProperties', properties)
             // commit('updateLocations', locationsArr);
             // commit('updateOfferings', convertedOfferings)
-         
-         
-            
         } catch (err) {
             console.log(err)
         }
@@ -122,22 +160,21 @@ export const actions = {
     async getTeam({ state, commit }) {
         if (state.members.length) return
         try {
-            let team = await fetch(
+            let team = await this.$axios.$get(
                 `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/team`
-            ).then((res) => res.json()) 
+            )
 
             team = team
                 .filter((el) => el.status === 'publish')
-                .map(({ id, slug, title, content,  acf }) => ({
+                .map(({ id, slug, title, content, acf }) => ({
                     id,
                     slug,
                     title,
                     content,
                     acf,
-                }));
+                }))
 
-        commit('updateTeamMembers', team);
-            
+            commit('updateTeamMembers', team)
         } catch (err) {
             console.log(err)
         }
@@ -145,17 +182,44 @@ export const actions = {
 
     // Can probably create one or 2 functions only
 
-    updateFilters({state, commit}, filteredProperties) {
+    updateFilters({ state, commit }, filteredProperties) {
         // Once we have the properties, fill up the filters with the available information
-        
+
         // We can use this to make filters dinamyc but how?
         // Look at this.filterByCity, we can dispatch and updatefilters but it need an order or it will filter out the current filter as well
-        const citiesArr = [...new Set( state.filteredProperties.map( property => property.acf.location_tab_group.location_table.city ) )];
-        const offeringsArr =  [...new Set( state.filteredProperties.map( property => property.acf.general_tab_group.offering_type ) )];
-        const typesArr = [...new Set( [].concat(...state.filteredProperties.map( property => property.acf.general_tab_group.property_type )))];
-        const statesArr = [...new Set( state.filteredProperties.map( property => property.acf.location_tab_group.location_table.state ) )];
-
-        
+        const citiesArr = [
+            ...new Set(
+                state.filteredProperties.map(
+                    (property) =>
+                        property.acf.location_tab_group.location_table.city
+                )
+            ),
+        ]
+        const offeringsArr = [
+            ...new Set(
+                state.filteredProperties.map(
+                    (property) => property.acf.general_tab_group.offering_type
+                )
+            ),
+        ]
+        const typesArr = [
+            ...new Set(
+                [].concat(
+                    ...state.filteredProperties.map(
+                        (property) =>
+                            property.acf.general_tab_group.property_type
+                    )
+                )
+            ),
+        ]
+        const statesArr = [
+            ...new Set(
+                state.filteredProperties.map(
+                    (property) =>
+                        property.acf.location_tab_group.location_table.state
+                )
+            ),
+        ]
     },
 
     // We need to add each active search param in an Array, for starters
@@ -173,57 +237,56 @@ export const actions = {
     // }
 
     filterByCity({ state, commit, dispatch }, city) {
-        commit('updateActiveSearchParams', 'city');
-        let filteredResults = '';
+        commit('updateActiveSearchParams', 'city')
+        let filteredResults = ''
 
-        if( city === 'all' ) {
-
+        if (city === 'all') {
             // What to do here?
             console.log('all')
-                
         } else {
             filteredResults = state.filteredProperties.filter(
                 (property) =>
                     property.acf.location_tab_group.location_table.city === city
             )
         }
-        
-        commit('filterProperties', filteredResults);
+
+        commit('filterProperties', filteredResults)
         // dispatch is used to execute a different action from within an action
-        dispatch('updateFilters');
-     
-        
+        dispatch('updateFilters')
     },
     filterByOffering({ state, commit }, offering) {
-        commit('updateActiveSearchParams', 'offering');
-        let offeringNum;
-        offering === 'Sale' ? offeringNum = 53 : offeringNum = 54
+        commit('updateActiveSearchParams', 'offering')
+        let offeringNum
+        offering === 'Sale' ? (offeringNum = 53) : (offeringNum = 54)
         const filteredResults = state.filteredProperties.filter(
             (property) =>
                 property.acf.general_tab_group.offering_type === offeringNum
         )
-        commit('filterProperties', filteredResults);
+        commit('filterProperties', filteredResults)
     },
     filterByType({ state, commit }, type) {
-        commit('updateActiveSearchParams', 'type');
-        const filteredResults = state.filteredProperties.filter(
-            (property) =>                           
-                property.acf.general_tab_group.property_type.find( el => el === type )
+        commit('updateActiveSearchParams', 'type')
+        const filteredResults = state.filteredProperties.filter((property) =>
+            property.acf.general_tab_group.property_type.find(
+                (el) => el === type
+            )
         )
-        commit('filterProperties', filteredResults);
+        commit('filterProperties', filteredResults)
     },
     filterByState({ state, commit }, singleState) {
-        commit('updateActiveSearchParams', 'singleState');
+        commit('updateActiveSearchParams', 'singleState')
         if (singleState === 'all') return
         const filteredResults = state.filteredProperties.filter(
-            (property) =>                           
-            property.acf.location_tab_group.location_table.state === singleState
+            (property) =>
+                property.acf.location_tab_group.location_table.state ===
+                singleState
         )
-        commit('filterProperties', filteredResults);
+        commit('filterProperties', filteredResults)
     },
 }
 
 // TODO
+// Can create an Array of markers here as Objects with the tooltip and all?
 // Need some way to keep track of every active filter and run each filter with the main properties
 // Use the main properties filter idea for that, a list of "pass" or checks
 // Can we get lat and lng from the plugin?

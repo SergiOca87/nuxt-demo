@@ -75,7 +75,7 @@
                         >
                             <b-card-text>Address: {{property.acf.location_tab_group.map.address | capitalize}}</b-card-text>
 
-                            <nuxt-link v-bind:to="`/property/${property.id}`">Property Page</nuxt-link>
+                            <nuxt-link v-bind:to="`/properties/${property.id}`">Property Page</nuxt-link>
                         </b-card>
                     </div>
                 </div>
