@@ -1,9 +1,7 @@
 <template>
     <div class="container">
-        
-            <main class="padding w-100">
-
-                <!-- This is not working, I think 
+        <main class="padding w-100">
+            <!-- This is not working, I think 
                 <GmapMap
                     :center="{lat:10, lng:10}"
                     :zoom="7"
@@ -19,66 +17,52 @@
                         @click="center=m.position"
                     />
                 </GmapMap>
-                 -->
-               <h2 class="mb-5">Properties</h2>
-                <!-- here we loop through the posts -->
-          
-                    <div class="row">
-                        <div class="post col-md-4" v-for="property in properties" :key="property.id">
-                            <b-card
-                                :title="property.title.rendered"
-                                img-src="https://picsum.photos/600/300/?image=25"
-                                img-alt="Image"
-                                img-top
-                                tag="article"
-                                style="max-width: 20rem;"
-                                class="mb-2"
-                            >
-                                <b-card-text>
-                                    Address: {{property.acf.location_tab_group.map.address | capitalize}}
-                                </b-card-text>
+            -->
+            <h2 class="mb-5">Properties</h2>
+            <!-- here we loop through the posts -->
 
-                                <nuxt-link :to="`/property/${property.id}`">
-                                    Property Page
-                                </nuxt-link>
-                            </b-card>
-                        </div>
-                    </div>
-               
+            <div class="row">
+                <div class="post col-md-4" v-for="property in properties" :key="property.id">
+                    <b-card
+                        :title="property.title.rendered"
+                        img-src="https://picsum.photos/600/300/?image=25"
+                        img-alt="Image"
+                        img-top
+                        tag="article"
+                        style="max-width: 20rem;"
+                        class="mb-2"
+                    >
+                        <b-card-text>Address: {{property.acf.location_tab_group.map.address | capitalize}}</b-card-text>
 
-                <h2 class="mb-5">Team</h2>
-                <!-- here we loop through the posts -->
-          
-                    <div class="row">
-                        <div class="post col-md-4" v-for="member in members" :key="member.id">
-                            <b-card
-                                :title="member.title.rendered"
-                            >
-                                <b-card-text>
-                                    {{member.title.rendered}}
-                                </b-card-text>
-
-                                <nuxt-link :to="`/team/${member.id}`">
-                                    Bio
-                                </nuxt-link>
-                            </b-card>
-                        </div>
-                    </div>
-                
-
-                <h2 class="mt-5 mb-3">Posts</h2>
-                <!-- here we loop through the posts -->
-                <div class="post" v-for="post in posts" :key="post.id">
-                    <h3>
-                        <!-- for each one of them, we’ll render their title, and link off to their individual page -->
-                        {{ post.title }}
-                    </h3>
+                        <nuxt-link :to="`/properties/${property.id}`">Property Page</nuxt-link>
+                    </b-card>
                 </div>
-            </main>
-        </div>
-    
-</template>
+            </div>
 
+            <h2 class="mb-5">Team</h2>
+            <!-- here we loop through the posts -->
+
+            <div class="row">
+                <div class="post col-md-4" v-for="member in team" :key="member.id">
+                    <b-card :title="member.title.rendered">
+                        <b-card-text>{{member.title.rendered}}</b-card-text>
+
+                        <nuxt-link :to="`/team/${member.id}`">Bio</nuxt-link>
+                    </b-card>
+                </div>
+            </div>
+
+            <h2 class="mt-5 mb-3">Posts</h2>
+            <!-- here we loop through the posts -->
+            <div class="post" v-for="post in posts" :key="post.id">
+                <h3>
+                    <!-- for each one of them, we’ll render their title, and link off to their individual page -->
+                    {{ post.title }}
+                </h3>
+            </div>
+        </main>
+    </div>
+</template>
 
 <script>
 export default {
@@ -95,9 +79,6 @@ export default {
         },
         properties() {
             return this.$store.state.properties
-        },
-        members() {
-            return this.$store.state.members
         }
     },
     filters: {
@@ -105,12 +86,20 @@ export default {
             if (!value) return ''
             value = value.toString()
             return value.charAt(0).toUpperCase() + value.slice(1)
-    }
-},
+        }
+    },
+    async asyncData({ $dataApi }){
+        const team = await $dataApi.getTeam();
+        return {
+            // properties,
+            team
+        }
+    },
+
     created() {
         // this.$store.dispatch('getPosts'),
         this.$store.dispatch('getProperties')
-        this.$store.dispatch('getTeam')
+        // this.$store.dispatch('getTeam')
     },
 }
 </script>

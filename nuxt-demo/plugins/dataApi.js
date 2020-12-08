@@ -1,11 +1,21 @@
-export default function(context, inject) {
-
+export default function ({ $axios }, inject) {
     inject('dataApi', {
-        getProperties
+        getProperties,
+        getTeam,
     })
+    //How to have access to the $axios module here?
     async function getProperties() {
-        const response = await fetch( `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/property`)
-        .then((res) => res.json())
+        const properties = await $axios.$get(
+            `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/property`
+        )
+        return properties
+    }
+
+    async function getTeam() {
+        const team = await $axios.$get(
+            `https://dev-nuxt-demo.pantheonsite.io/wp-json/wp/v2/team`
+        )
+        return team
     }
 }
 

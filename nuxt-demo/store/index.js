@@ -21,6 +21,9 @@ export const mutations = {
     updateCities: (state, cities) => {
         state.cities = cities
     },
+    updatePass: (state, { index, bool }) => {
+        state.properties[index].pass = bool
+    },
     updateStatePairs: (state, statePair) => {
         state.statePairs.push(statePair)
     },
@@ -60,6 +63,7 @@ export const actions = {
                     slug,
                     title,
                     acf,
+                    pass: true,
                 }))
 
             // Update filters with the current properties
@@ -244,15 +248,20 @@ export const actions = {
             // What to do here?
             console.log('all')
         } else {
-            filteredResults = state.filteredProperties.filter(
-                (property) =>
-                    property.acf.location_tab_group.location_table.city === city
-            )
+            state.properties.forEach((property, index) => {
+                if (
+                    property.acf.location_tab_group.location_table.city !== city
+                ) {
+                    commit('updatePass', {
+                        index: index,
+                        bool: false,
+                    })
+                }
+            })
         }
 
-        commit('filterProperties', filteredResults)
-        // dispatch is used to execute a different action from within an action
-        dispatch('updateFilters')
+        // commit('filterProperties', filteredResults)
+        // dispatch('updateFilters')
     },
     filterByOffering({ state, commit }, offering) {
         commit('updateActiveSearchParams', 'offering')

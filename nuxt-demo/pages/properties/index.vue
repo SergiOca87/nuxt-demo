@@ -23,7 +23,7 @@
                         <select
                             name="'property-state'"
                             v-model="property_city"
-                            v-on:change="filterByCity()"
+                            v-on:change="filterProperty( 'filterByCity', property_city)"
                         >
                             <option value="all">Cities</option>
                             <option v-for="city in cities" :value="city">{{ city }}</option>
@@ -35,7 +35,7 @@
                         <select
                             name="'offering-type'"
                             v-model="property_offering"
-                            v-on:change="filterByOffering()"
+                            v-on:change="filterProperty( 'filterByOffering', property_offering)"
                         >
                             <option value="all">Offering Type</option>
                             <option v-for="offering in offerings" :value="offering">{{ offering }}</option>
@@ -46,7 +46,7 @@
                         <select
                             name="'property-type'"
                             v-model="property_type"
-                            v-on:change="filterByType()"
+                            v-on:change="filterProperty( 'filterByType', property_type)"
                         >
                             <option value="all">Property Type</option>
                             <template v-for="type in types">
@@ -72,6 +72,7 @@
                             tag="article"
                             style="max-width: 40rem;"
                             class="mb-2"
+                            v-if="property.pass === true"
                         >
                             <b-card-text>Address: {{property.acf.location_tab_group.map.address | capitalize}}</b-card-text>
 
@@ -113,17 +114,17 @@ export default {
         }
     },
      mounted(){
-        const mapOptions = {
-            zoom: 18,
-            center: new window.google.maps.LatLng(40.7127753, -74.0059728),
-            disableDefaultUI: true,
-            zoomControl: true
-        };
-        // We use a Vue ref, but an ID a dcoument.querySelector would work as well
-        const map = new window.google.maps.Map(this.$refs.map, mapOptions);
-        const position = new window.google.maps.LatLng(40.7127753, -74.0059728)
-        const marker = new window.google.maps.Marker({ position })
-        marker.setMap(map)
+        // const mapOptions = {
+        //     zoom: 18,
+        //     center: new window.google.maps.LatLng(40.7127753, -74.0059728),
+        //     disableDefaultUI: true,
+        //     zoomControl: true
+        // };
+        // // We use a Vue ref, but an ID a dcoument.querySelector would work as well
+        // const map = new window.google.maps.Map(this.$refs.map, mapOptions);
+        // const position = new window.google.maps.LatLng(40.7127753, -74.0059728)
+        // const marker = new window.google.maps.Marker({ position })
+        // marker.setMap(map)
     },
      filters: {
         capitalize: function (value) {
@@ -158,18 +159,10 @@ export default {
             // }
         
         },
-        filterByCity() {
-            this.$store.dispatch('filterByCity', this.property_city)
+        filterProperty( filterType, value ) {
+            this.$store.dispatch( filterType, value )
         },
-        filterByOffering() {
-            this.$store.dispatch('filterByOffering', this.property_offering)
-        },
-        filterByType() {
-            this.$store.dispatch('filterByType', this.property_type)
-        },
-        filterByState() {
-             this.$store.dispatch('filterByState', this.property_state)
-        }
+        
     }
 }
 
